@@ -1,0 +1,11 @@
+{
+  "name": "markson",
+  "version": "1.0.0",
+  "description": "Markdown files to JSON JavaScript Library",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run dev"
+  },
+  "author": "Eltrac",
+  "license": "MIT"
+}
