@@ -32,8 +32,36 @@ export default class Markson {
         } : null
 
         /**
+         * Read a Markdown file
+         * and generate an object
+         */
+
+        this.read = (filename) => {
+            // Basic, fetch content and parse it
+            const content = fs.readFileSync(filename, { encoding: 'utf-8'});
+            const html = micromark(content, micromarkOptions);
+
+            let item = {
+                filename: filename,
+                markdown: content,
+                html: html
+            }
+
+            // Option, cleans text
+            if (options.cleanText) {
+                const cleanText = html.replace(/<[^>]*>/g, '');
+                item.cleanText = cleanText;
+
+                const cleanLine = cleanText.replace(/\s/g, '');
+                item.cleanLine = cleanLine;
+            } 
+
+            return item;
+        }
+
+        /**
          * Read a dir containing markdown files
-         * and generate JSON
+         * and generate an array containing each object
          * 
          * @param {string} dir 
          * @returns {array}
@@ -44,29 +72,11 @@ export default class Markson {
             
             let array = [];
             filenames.forEach((filename) => {
-                // Basic, fetch content and parse it
-                const content = fs.readFileSync(path.join(dir, filename), { encoding: 'utf-8'});
-                const html = micromark(content, micromarkOptions);
-
-                let item = {
-                    filename: filename,
-                    markdown: content,
-                    html: html
-                }
-
-                // Option, cleans text
-                if (options.cleanText) {
-                    const cleanText = html.replace(/<[^>]*>/g, '');
-                    item.cleanText = cleanText;
-
-                    const cleanLine = cleanText.replace(/\s/g, '');
-                    item.cleanLine = cleanLine;
-                } 
-
-                array.push(item)
+                let item = this.read(path.join(dir, filename));
+                array.push(item);
             })
 
-            return array
+            return array;
         }
     }
 }
