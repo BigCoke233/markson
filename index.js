@@ -59,11 +59,21 @@ export default class Markson {
             } 
  
             if (options.frontmatter) {
-                const match = content.match(/^---(.*?)---/s)
-                const matter = match
+                const match = content.match(/^---(.*?)---/s);
+                const matterString = match
                     ? match[1].replace(/^\r?\n/g, '').replace(/\r?\n$/g, '')
-                    : null
-                item.matter = yaml.load(matter)
+                    : null;
+                const matter = yaml.load(matterString);
+
+                item.matter = matter;
+
+                // deal with specific front matter
+                // title, date...
+                if (matter?.title) item.title = matter.title;
+                if (matter?.date) {
+                    let date = new Date(matter.date).toString();
+                    item.date = date;
+                }
             }
 
             return item;
