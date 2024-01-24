@@ -18,8 +18,9 @@ import yaml from 'js-yaml'
 export default class Markson {
     constructor(options = {
         gfm: true,          // enable github-flavored-markdown
-        cleanText: false,   // if enabled, returns clean text without html tags and white spaces
+        cleanText: false,   // if enabled, exports clean text without html tags and white spaces
         frontmatter: true,  // if enabled, parse front matters in markdown files
+        rawMD: false,       // if enabled, exports raw markdown content
     }) {
 
         /**
@@ -45,9 +46,11 @@ export default class Markson {
 
             let item = {
                 filename: filename,
-                markdown: content,
                 html: html
             }
+
+            // Option, raw markdown content
+            if (options.rawMD) item.markdown = content
 
             // Option, cleans text
             if (options.cleanText) {
@@ -58,6 +61,7 @@ export default class Markson {
                 item.cleanLine = cleanLine;
             } 
  
+            // Option, load yaml front matter
             if (options.frontmatter) {
                 // find and load yaml frontmatter
                 const match = content.match(/^---(.*?)---/s);
