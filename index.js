@@ -13,7 +13,9 @@ import path from 'path'
 // markdown parsing
 import { micromark } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';
-import yaml from 'js-yaml'
+
+import MarksonParser from './parse.js';
+const parser = new MarksonParser();
 
 export default class Markson {
     constructor(options = {
@@ -36,43 +38,41 @@ export default class Markson {
         } : null
 
         /**
-         * Read a Markdown file
-         * and generate an object
+         * Read a markdown file and generate object
+         * @param {string} filename 
+         * @returns 
          */
 
         this.read = (filename) => {
-            // Basic, fetch content and create an object
+            // read file content and create an object
             const content = fs.readFileSync(filename, { encoding: 'utf-8'});
-            let item = {
-                filename: filename
-            }
+            let item = { filename: filename }
 
-            // Option, raw markdown content
+            // initialize slug, being filename without suffix
+            item.slug = filename.match(/[^\\\\]+$/g)[0]?.replace('.md','');
+
+            // Option, exports raw markdown content
             if (options.rawMD) item.markdown = content
  
             // Option, load yaml front matter
-            let matter, contentWithNoFM = content;
+            let contentWithNoFM = content;
             if (options.frontmatter) {
-                const frontmatterRegex = /^---(.*?)---/s;
-                // find and load yaml frontmatter
-                const match = content.match(frontmatterRegex);
-                const matterString = match
-                    ? match[1].replace(/^\r?\n/g, '').replace(/\r?\n$/g, '')
-                    : null;
-                matter = yaml.load(matterString);
+                const parsed = parser.fm(content);
 
-                item.matter = matter;
+                // Option, replace slug with slug in fm if exists
+                if (options.slug == 'frontmatter' && parsed.matter?.slug)
+                    item.slug = parsed.matter.slug;
 
                 // deal with specific front matter
                 // title, date...
-                if (matter?.title) item.title = matter.title;
-                if (matter?.date) {
-                    let date = new Date(matter.date).toString();
+                if (parsed.matter?.title) item.title = parsed.matter.title;
+                if (parsed.matter?.date) {
+                    let date = new Date(parsed.matter.date).toString();
                     item.date = date;
                 }
 
-                // strip front matter string
-                contentWithNoFM = content.replace(frontmatterRegex, '');
+                // strip front matter
+                contentWithNoFM = parsed.content;
             }
 
             // parse markdown to html string
@@ -81,19 +81,10 @@ export default class Markson {
 
             // Option, cleans text
             if (options.cleanText) {
-                const cleanText = html.replace(/<[^>]*>/g, '');
-                item.cleanText = cleanText;
-
-                const cleanLine = cleanText.replace(/\r?\n/g, '');
-                item.cleanLine = cleanLine;
+                const cleaned = parser.clean(html);
+                item.cleanText = cleaned.cleanText; // clean text with no html tags
+                item.cleanLine = cleaned.cleanLine; // clean text with no white spaces
             } 
-
-            // slug
-            if (options.slug == 'frontmatter' && options.frontmatter && matter?.slug)
-                item.slug = matter.slug;
-            else {
-                item.slug = filename.match(/[^\\\\]+$/g)[0].replace('.md','');
-            }
 
             return item;
         }
