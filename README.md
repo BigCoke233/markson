@@ -1,4 +1,4 @@
-# Markson
+# Markson.js
 
 JavaScript library that reads Markdown files and generates JSON-based blog posts, supporting Yaml Front Matter and GitHub Flavored Markdown.
 
@@ -11,7 +11,7 @@ npm i marksonjs
 ## Usage
 
 ```javascript
-import Markson from 'markson';
+import Markson from 'marksonjs';
 
 //...
 

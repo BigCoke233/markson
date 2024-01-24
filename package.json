@@ -1,5 +1,5 @@
 {
-  "name": "markson",
+  "name": "marksonjs",
   "version": "1.0.0",
   "description": "Markdown files to JSON JavaScript Library",
   "main": "index.js",
