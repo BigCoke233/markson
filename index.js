@@ -46,7 +46,10 @@ export default class Markson {
         this.read = (filename) => {
             // read file content and create an object
             const content = fs.readFileSync(filename, { encoding: 'utf-8'});
-            let item = { filename: filename }
+            let item = { 
+                type: 'file',
+                filename: filename
+            }
 
             // initialize slug, being filename without suffix
             item.slug = filename.match(/[^\\\\]+$/g)[0]?.replace('.md','');
@@ -99,13 +102,24 @@ export default class Markson {
 
         this.fetch = (dir) => {
             const filenames = fs.readdirSync(dir);
-            
+
             let array = [];
             filenames.forEach((filename) => {
-                if (filename.match(/.md$/)) {
-                    let item = this.read(path.join(dir, filename));
-                    array.push(item);
+                let item, pathname = path.join(dir, filename);
+                // for sub-directory
+                if (fs.lstatSync(pathname).isDirectory()) {
+                    item = {
+                        type: 'directory',
+                        filename: filename,
+                        files: this.fetch(pathname)
+                    }
                 }
+                // for markdown files
+                else if (filename.match(/.md$/)) {
+                    item = this.read(pathname);
+                }
+
+                if (item) array.push(item);
             })
 
             return array;
