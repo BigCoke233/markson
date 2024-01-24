@@ -16,7 +16,8 @@ import { gfm, gfmHtml } from 'micromark-extension-gfm';
 
 export default class Markson {
     constructor(options = {
-        gfm: true
+        gfm: true,          // enable github-flavored-markdown
+        cleanText: false,   // if enabled, returns clean text without html tags and white spaces
     }) {
 
         /**
@@ -35,6 +36,7 @@ export default class Markson {
          * and generate JSON
          * 
          * @param {string} dir 
+         * @returns {array}
          */
 
         this.fetch = (dir) => {
@@ -42,14 +44,26 @@ export default class Markson {
             
             let array = [];
             filenames.forEach((filename) => {
+                // Basic, fetch content and parse it
                 const content = fs.readFileSync(path.join(dir, filename), { encoding: 'utf-8'});
-                const html = micromark(content, micromarkOptions)
+                const html = micromark(content, micromarkOptions);
 
-                array.push({
+                let item = {
                     filename: filename,
                     markdown: content,
                     html: html
-                })
+                }
+
+                // Option, cleans text
+                if (options.cleanText) {
+                    const cleanText = html.replace(/<[^>]*>/g, '');
+                    item.cleanText = cleanText;
+
+                    const cleanLine = cleanText.replace(/\s/g, '');
+                    item.cleanLine = cleanLine;
+                } 
+
+                array.push(item)
             })
 
             return array
