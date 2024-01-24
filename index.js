@@ -21,6 +21,7 @@ export default class Markson {
         cleanText: false,   // if enabled, exports clean text without html tags and white spaces
         frontmatter: true,  // if enabled, parse front matters in markdown files
         rawMD: false,       // if enabled, exports raw markdown content
+        slug: 'filename',   // specify what to use as slug (pathname), filename or 'slug' front matter
     }) {
 
         /**
@@ -62,13 +63,14 @@ export default class Markson {
             } 
  
             // Option, load yaml front matter
+            let matter;
             if (options.frontmatter) {
                 // find and load yaml frontmatter
                 const match = content.match(/^---(.*?)---/s);
                 const matterString = match
                     ? match[1].replace(/^\r?\n/g, '').replace(/\r?\n$/g, '')
                     : null;
-                const matter = yaml.load(matterString);
+                matter = yaml.load(matterString);
 
                 item.matter = matter;
 
@@ -79,6 +81,13 @@ export default class Markson {
                     let date = new Date(matter.date).toString();
                     item.date = date;
                 }
+            }
+
+            // slug
+            if (options.slug == 'frontmatter' && options.frontmatter && matter?.slug)
+                item.slug = matter.slug;
+            else {
+                item.slug = filename.match(/[^\\\\]+$/g)[0].replace('.md','');
             }
 
             return item;
