@@ -59,6 +59,7 @@ export default class Markson {
             } 
  
             if (options.frontmatter) {
+                // find and load yaml frontmatter
                 const match = content.match(/^---(.*?)---/s);
                 const matterString = match
                     ? match[1].replace(/^\r?\n/g, '').replace(/\r?\n$/g, '')
