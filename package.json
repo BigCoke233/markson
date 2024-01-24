@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Markdown files to JSON JavaScript Library",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "npm run dev"
   },
@@ -12,5 +13,9 @@
     "eslint": "^8.56.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.29.1"
+  },
+  "dependencies": {
+    "micromark": "^4.0.0",
+    "micromark-extension-gfm": "^3.0.0"
   }
 }
