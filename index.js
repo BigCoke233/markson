@@ -52,7 +52,7 @@ export default class Markson {
                 const cleanText = html.replace(/<[^>]*>/g, '');
                 item.cleanText = cleanText;
 
-                const cleanLine = cleanText.replace(/\s/g, '');
+                const cleanLine = cleanText.replace(/\n/g, '').replace(/\r/g, '');
                 item.cleanLine = cleanLine;
             } 
 
