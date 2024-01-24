@@ -13,11 +13,13 @@ import path from 'path'
 // markdown parsing
 import { micromark } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';
+import yaml from 'js-yaml'
 
 export default class Markson {
     constructor(options = {
         gfm: true,          // enable github-flavored-markdown
         cleanText: false,   // if enabled, returns clean text without html tags and white spaces
+        frontmatter: true,  // if enabled, parse front matters in markdown files
     }) {
 
         /**
@@ -52,9 +54,17 @@ export default class Markson {
                 const cleanText = html.replace(/<[^>]*>/g, '');
                 item.cleanText = cleanText;
 
-                const cleanLine = cleanText.replace(/\n/g, '').replace(/\r/g, '');
+                const cleanLine = cleanText.replace(/\r?\n/g, '');
                 item.cleanLine = cleanLine;
             } 
+ 
+            if (options.frontmatter) {
+                const match = content.match(/^---(.*?)---/s)
+                const matter = match
+                    ? match[1].replace(/^\r?\n/g, '').replace(/\r?\n$/g, '')
+                    : null
+                item.matter = yaml.load(matter)
+            }
 
             return item;
         }
