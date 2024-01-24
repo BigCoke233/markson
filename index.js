@@ -6,3 +6,8 @@
  * an easy-to-use JSON API.
  */
 
+class Markson {
+
+}
+
+module.exports = Markson;
