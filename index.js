@@ -82,8 +82,10 @@ export default class Markson {
             
             let array = [];
             filenames.forEach((filename) => {
-                let item = this.read(path.join(dir, filename));
-                array.push(item);
+                if (filename.match(/.md$/)) {
+                    let item = this.read(path.join(dir, filename));
+                    array.push(item);
+                }
             })
 
             return array;
