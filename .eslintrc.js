@@ -9,6 +9,9 @@ module.exports = {
       env: {
         node: true,
       },
+      rules: {
+        'linebreak-style': ['error', 'windows'],
+      },
       files: [
         '.eslintrc.{js,cjs}',
       ],
