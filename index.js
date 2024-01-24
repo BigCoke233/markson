@@ -41,32 +41,21 @@ export default class Markson {
          */
 
         this.read = (filename) => {
-            // Basic, fetch content and parse it
+            // Basic, fetch content and create an object
             const content = fs.readFileSync(filename, { encoding: 'utf-8'});
-            const html = micromark(content, micromarkOptions);
-
             let item = {
-                filename: filename,
-                html: html
+                filename: filename
             }
 
             // Option, raw markdown content
             if (options.rawMD) item.markdown = content
-
-            // Option, cleans text
-            if (options.cleanText) {
-                const cleanText = html.replace(/<[^>]*>/g, '');
-                item.cleanText = cleanText;
-
-                const cleanLine = cleanText.replace(/\r?\n/g, '');
-                item.cleanLine = cleanLine;
-            } 
  
             // Option, load yaml front matter
-            let matter;
+            let matter, contentWithNoFM = content;
             if (options.frontmatter) {
+                const frontmatterRegex = /^---(.*?)---/s;
                 // find and load yaml frontmatter
-                const match = content.match(/^---(.*?)---/s);
+                const match = content.match(frontmatterRegex);
                 const matterString = match
                     ? match[1].replace(/^\r?\n/g, '').replace(/\r?\n$/g, '')
                     : null;
@@ -81,7 +70,23 @@ export default class Markson {
                     let date = new Date(matter.date).toString();
                     item.date = date;
                 }
+
+                // strip front matter string
+                contentWithNoFM = content.replace(frontmatterRegex, '');
             }
+
+            // parse markdown to html string
+            const html = micromark(contentWithNoFM, micromarkOptions);
+            item.html = html;
+
+            // Option, cleans text
+            if (options.cleanText) {
+                const cleanText = html.replace(/<[^>]*>/g, '');
+                item.cleanText = cleanText;
+
+                const cleanLine = cleanText.replace(/\r?\n/g, '');
+                item.cleanLine = cleanLine;
+            } 
 
             // slug
             if (options.slug == 'frontmatter' && options.frontmatter && matter?.slug)
