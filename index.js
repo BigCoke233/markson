@@ -119,7 +119,7 @@ export default class Markson {
          * @param {string} source source path name
          * @param {string} destination destination file name (usually json file)
          * @param {string} type 'dir' or 'file'
-         * @returns {boolean}
+         * @returns {boolean} if got any data
          */
 
         this.write = (source, destination = './output.json', type = 'dir') => {
@@ -137,6 +137,8 @@ export default class Markson {
             if (!fs.existsSync(directory))  // make sure dir exists, if not then create
                 fs.mkdirSync(directory, { recursive: true });
             fs.writeFileSync(destination, output);
+
+            return true;
         }
     }
 }
