@@ -90,8 +90,8 @@ export default class Markson {
 
         this.scan = (dir) => {
             const filenames = fs.readdirSync(dir);
-
             let array = [];
+
             filenames.forEach((filename) => {
                 // if the file is hidden (whose name starts with '.')
                 // then stop reading

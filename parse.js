@@ -16,7 +16,7 @@ export default class MarksonParser {
          * Parse Markdown String to HTML
          * @param {string} string raw markdown
          * @param {object, string} options Markson options or put 'gfm' to enable gfm only
-         * @returns 
+         * @returns {string} HTML string
          */
 
         this.md = (string, options) => {
