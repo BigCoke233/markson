@@ -44,28 +44,24 @@ export default class Markson {
             if (options.rawMD) data.markdown = content
  
             // Option, load yaml front matter
-            let contentWithNoFM = content;
             if (options.frontmatter) {
-                const parsed = parser.fm(content);
+                const matter = parser.fm(content);
 
                 // Option, replace slug with slug in fm if exists
-                if (options.slug == 'frontmatter' && parsed.matter?.slug)
-                    data.slug = parsed.matter.slug;
+                if (options.slug == 'frontmatter' && matter?.slug)
+                    data.slug = matter.slug;
 
                 // deal with specific front matter
                 // title, date...
-                if (parsed.matter?.title) data.title = parsed.matter.title;
-                if (parsed.matter?.date) {
-                    let date = new Date(parsed.matter.date).toString();
+                if (matter?.title) data.title = matter.title;
+                if (matter?.date) {
+                    let date = new Date(matter.date).toString();
                     data.date = date;
                 }
-
-                // strip front matter
-                contentWithNoFM = parsed.content;
             }
 
             // parse markdown to html string
-            const html = parser.md(contentWithNoFM, options);
+            const html = parser.md(content, options);
             data.html = html;
 
             // Option, cleans text

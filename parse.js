@@ -12,18 +12,25 @@ import { gfm, gfmHtml } from 'micromark-extension-gfm';
 export default class MarksonParser {
     constructor () {
 
+        const frontmatterRegex = /^---\r?\n(.*?)---\r?\n/s;
+
         /**
          * Parse Markdown String to HTML
          * @param {string} string raw markdown
-         * @param {object, string} options Markson options or put 'gfm' to enable gfm only
+         * @param {object, string} options Markson options
          * @returns {string} HTML string
          */
 
         this.md = (string, options) => {
-            const micromarkOptions = (options.gfm || options == 'gfm') ? {
+            // configure micromark
+            const micromarkOptions = options.gfm ? {
                 extensions: [gfm()],
                 htmlExtensions: [gfmHtml()]
             } : null;
+
+            // strip frontmatter if enabled
+            if (options.frontmatter) string = string.replace(frontmatterRegex, '');
+
             return micromark(string, micromarkOptions);
         }
 
@@ -34,8 +41,6 @@ export default class MarksonParser {
          */
 
         this.fm = string => {
-            const frontmatterRegex = /^---\r?\n(.*?)---\r?\n/s;
-
             // find and load yaml frontmatter
             const match = string.match(frontmatterRegex);
             const matterString = match
@@ -43,13 +48,7 @@ export default class MarksonParser {
                 : null;
             const matter = yaml.load(matterString);
 
-            // strip string, take off front matter
-            const contentWithNoFM = string.replace(frontmatterRegex, '');
-
-            return {
-                matter: matter,
-                content: contentWithNoFM
-            }
+            return matter
         }
 
         /**
