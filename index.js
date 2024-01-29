@@ -35,11 +35,13 @@ export default class Markson {
                 filename: filename
             }
 
+            let data = {};
+
             // initialize slug, being filename without suffix
-            item.slug = filename.match(/[^\\\\]+$/g)[0]?.replace('.md','');
+            data.slug = filename.match(/[^\\\\]+$/g)[0]?.replace('.md','');
 
             // Option, exports raw markdown content
-            if (options.rawMD) item.markdown = content
+            if (options.rawMD) data.markdown = content
  
             // Option, load yaml front matter
             let contentWithNoFM = content;
@@ -48,14 +50,14 @@ export default class Markson {
 
                 // Option, replace slug with slug in fm if exists
                 if (options.slug == 'frontmatter' && parsed.matter?.slug)
-                    item.slug = parsed.matter.slug;
+                    data.slug = parsed.matter.slug;
 
                 // deal with specific front matter
                 // title, date...
-                if (parsed.matter?.title) item.title = parsed.matter.title;
+                if (parsed.matter?.title) data.title = parsed.matter.title;
                 if (parsed.matter?.date) {
                     let date = new Date(parsed.matter.date).toString();
-                    item.date = date;
+                    data.date = date;
                 }
 
                 // strip front matter
@@ -64,14 +66,16 @@ export default class Markson {
 
             // parse markdown to html string
             const html = parser.md(contentWithNoFM, options);
-            item.html = html;
+            data.html = html;
 
             // Option, cleans text
             if (options.cleanText) {
                 const cleaned = parser.clean(html);
-                item.cleanText = cleaned.cleanText; // clean text with no html tags
-                item.cleanLine = cleaned.cleanLine; // clean text with no white spaces
+                data.cleanText = cleaned.cleanText; // clean text with no html tags
+                data.cleanLine = cleaned.cleanLine; // clean text with no white spaces
             } 
+
+            item.data = data;
 
             return item;
         }
@@ -95,7 +99,7 @@ export default class Markson {
                     item = {
                         type: 'directory',
                         filename: filename,
-                        files: this.scan(pathname)
+                        data: this.scan(pathname),
                     }
                 }
                 // for markdown files
