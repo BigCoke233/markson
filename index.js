@@ -93,14 +93,14 @@ export default class Markson {
         }
 
         /**
-         * Read a dir containing markdown files
+         * Scan a dir containing markdown files
          * and generate an array containing each object
          * 
          * @param {string} dir 
          * @returns {array}
          */
 
-        this.fetch = (dir) => {
+        this.scan = (dir) => {
             const filenames = fs.readdirSync(dir);
 
             let array = [];
@@ -111,7 +111,7 @@ export default class Markson {
                     item = {
                         type: 'directory',
                         filename: filename,
-                        files: this.fetch(pathname)
+                        files: this.scan(pathname)
                     }
                 }
                 // for markdown files
