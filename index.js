@@ -93,9 +93,13 @@ export default class Markson {
 
             let array = [];
             filenames.forEach((filename) => {
+                // if the file is hidden (whose name starts with '.')
+                // then stop reading
+                if (filename.charAt(0) == '.') return false;
+
                 let item, pathname = path.join(dir, filename);
                 // for sub-directory
-                if ((filename.charAt(0) != '.') && fs.lstatSync(pathname).isDirectory()) {
+                if (fs.lstatSync(pathname).isDirectory()) {
                     item = {
                         type: 'directory',
                         filename: filename,
