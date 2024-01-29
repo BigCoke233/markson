@@ -18,6 +18,7 @@ export default class Markson {
         cleanText: false,   // if enabled, exports clean text without html tags and white spaces
         frontmatter: true,  // if enabled, parse front matters in markdown files
         rawMD: false,       // if enabled, exports raw markdown content
+        exportHTML: true,
         slug: 'filename',   // specify what to use as slug (pathname), filename or 'slug' front matter
     }) {
 
@@ -62,7 +63,7 @@ export default class Markson {
 
             // parse markdown to html string
             const html = parser.md(content, options);
-            data.html = html;
+            if(options.exportHTML) data.html = html;
 
             // Option, cleans text
             if (options.cleanText) {
