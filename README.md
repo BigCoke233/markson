@@ -1,3 +1,7 @@
+```diff
+- NOTE: This library is still under development, so API may change. Please do not use it in production environment.
+```
+
 # Markson.js
 
 JavaScript library that reads Markdown files and generates JSON-based blog posts, supporting Yaml Front Matter and GitHub Flavored Markdown.
