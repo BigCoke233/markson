@@ -6,13 +6,8 @@
  * an easy-to-use JSON API.
  */
 
-// file system related
 import fs from 'fs'
 import path from 'path'
-
-// markdown parsing
-import { micromark } from 'micromark';
-import { gfm, gfmHtml } from 'micromark-extension-gfm';
 
 import MarksonParser from './parse.js';
 const parser = new MarksonParser();
@@ -25,17 +20,6 @@ export default class Markson {
         rawMD: false,       // if enabled, exports raw markdown content
         slug: 'filename',   // specify what to use as slug (pathname), filename or 'slug' front matter
     }) {
-
-        /**
-         * Dealing with options
-         */
-
-        // micromark options
-        // if gfm enabled, configure it
-        const micromarkOptions = options.gfm ? {
-            extensions: [gfm()],
-            htmlExtensions: [gfmHtml()]
-        } : null
 
         /**
          * Read a markdown file and generate object
@@ -79,7 +63,7 @@ export default class Markson {
             }
 
             // parse markdown to html string
-            const html = micromark(contentWithNoFM, micromarkOptions);
+            const html = parser.md(contentWithNoFM, options);
             item.html = html;
 
             // Option, cleans text

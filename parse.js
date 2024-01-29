@@ -6,8 +6,26 @@
 
 import yaml from 'js-yaml'
 
+import { micromark } from 'micromark';
+import { gfm, gfmHtml } from 'micromark-extension-gfm';
+
 export default class MarksonParser {
     constructor () {
+
+        /**
+         * Parse Markdown String to HTML
+         * @param {string} string raw markdown
+         * @param {object, string} options Markson options or put 'gfm' to enable gfm only
+         * @returns 
+         */
+
+        this.md = (string, options) => {
+            const micromarkOptions = (options.gfm || options == 'gfm') ? {
+                extensions: [gfm()],
+                htmlExtensions: [gfmHtml()]
+            } : null;
+            return micromark(string, micromarkOptions);
+        }
 
         /**
          * Load Front Matter
