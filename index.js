@@ -95,7 +95,7 @@ export default class Markson {
             filenames.forEach((filename) => {
                 let item, pathname = path.join(dir, filename);
                 // for sub-directory
-                if (fs.lstatSync(pathname).isDirectory()) {
+                if ((filename.charAt(0) != '.') && fs.lstatSync(pathname).isDirectory()) {
                     item = {
                         type: 'directory',
                         filename: filename,
