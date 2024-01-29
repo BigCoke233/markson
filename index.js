@@ -59,6 +59,8 @@ export default class Markson {
                     let date = new Date(matter.date).toString();
                     data.date = date;
                 }
+
+                data.attributes = matter;
             }
 
             // parse markdown to html string
