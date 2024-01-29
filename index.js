@@ -113,5 +113,30 @@ export default class Markson {
 
             return array;
         }
+
+        /**
+         * Get Data and Write into a File
+         * @param {string} source source path name
+         * @param {string} destination destination file name (usually json file)
+         * @param {string} type 'dir' or 'file'
+         * @returns {boolean}
+         */
+
+        this.write = (source, destination = './output.json', type = 'dir') => {
+            // scan or read to get data
+            let output;
+            if (type == 'dir') output = this.scan(source);
+            else if (type == 'file') output = this.read(source);
+            output = JSON.stringify(output);
+
+            // if got nothing, exit
+            if (!output) return false;
+
+            // write data into given file
+            const directory = path.dirname(destination);
+            if (!fs.existsSync(directory))  // make sure dir exists, if not then create
+                fs.mkdirSync(directory, { recursive: true });
+            fs.writeFileSync(destination, output);
+        }
     }
 }
