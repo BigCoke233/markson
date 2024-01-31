@@ -18,7 +18,7 @@ export default class Markson {
         cleanText: false,   // if enabled, exports clean text without html tags and white spaces
         frontmatter: true,  // if enabled, parse front matters in markdown files
         rawMD: false,       // if enabled, exports raw markdown content
-        exportHTML: true,
+        exportHTML: true,   // if enabled, exports parsed html content
         slug: 'filename',   // specify what to use as slug (pathname), filename or 'slug' front matter
     }) {
 
@@ -29,13 +29,14 @@ export default class Markson {
          */
 
         this.read = (filename) => {
-            // read file content and create an object
             const content = fs.readFileSync(filename, { encoding: 'utf-8'});
+
+            // initialize an object
             let item = { 
                 type: 'file',
-                filename: filename
+                filename: filename,
+                data: null,
             }
-
             let data = {};
 
             // initialize slug, being filename without suffix
