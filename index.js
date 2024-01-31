@@ -9,8 +9,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import MarksonParser from './parse.js';
-const parser = new MarksonParser();
+import parser from './parse.js';
 
 export default class Markson {
     constructor(options = {

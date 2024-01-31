@@ -9,7 +9,7 @@ import yaml from 'js-yaml'
 import { micromark } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';
 
-export default class MarksonParser {
+class MarksonParser {
     constructor () {
 
         const frontmatterRegex = /^---\r?\n(.*?)---\r?\n/s;
@@ -68,3 +68,6 @@ export default class MarksonParser {
         }
     }
 }
+const parser = new MarksonParser();
+
+export default parser;
