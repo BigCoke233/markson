@@ -25,7 +25,7 @@ export default class Markson {
         /**
          * Read a markdown file and generate object
          * @param {string} filename 
-         * @returns 
+         * @returns {object}
          */
 
         this.read = (filename) => {
