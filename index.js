@@ -39,7 +39,7 @@ export default class Markson {
             let data = {};
 
             // initialize slug, being filename without suffix
-            data.slug = filename.match(/[^\\\\]+$/g)[0]?.replace('.md','');
+            data.slug = path.basename(filename, '.md');
 
             // Option, exports raw markdown content
             if (options.rawMD) data.markdown = content
@@ -106,7 +106,7 @@ export default class Markson {
                     }
                 }
                 // for markdown files
-                else if (filename.match(/.md$/)) {
+                else if (path.extname(filename) == '.md') {
                     item = this.read(pathname);
                 }
 
