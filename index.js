@@ -29,55 +29,59 @@ export default class Markson {
          */
 
         this.read = (filename) => {
-            const content = fs.readFileSync(filename, { encoding: 'utf-8'});
+            try {
+                const content = fs.readFileSync(filename, { encoding: 'utf-8'});
 
-            // initialize an object
-            let item = { 
-                type: 'file',
-                filename: filename,
-                data: null,
-            }
-            let data = {};
+                // initialize an object
+                let item = { 
+                    type: 'file',
+                    filename: filename,
+                    data: null,
+                }
+                let data = {};
 
-            // initialize slug, being filename without suffix
-            data.slug = path.basename(filename, '.md');
+                // initialize slug, being filename without suffix
+                data.slug = path.basename(filename, '.md');
 
-            // Option, exports raw markdown content
-            if (options.rawMD) data.markdown = content
- 
-            // Option, load yaml front matter
-            if (options.frontmatter) {
-                const matter = parser.fm(content);
+                // Option, exports raw markdown content
+                if (options.rawMD) data.markdown = content
+    
+                // Option, load yaml front matter
+                if (options.frontmatter) {
+                    const matter = parser.fm(content);
 
-                // Option, replace slug with slug in fm if exists
-                if (options.slug == 'frontmatter' && matter?.slug)
-                    data.slug = matter.slug;
+                    // Option, replace slug with slug in fm if exists
+                    if (options.slug == 'frontmatter' && matter?.slug)
+                        data.slug = matter.slug;
 
-                // deal with specific front matter
-                // title, date...
-                if (matter?.title) data.title = matter.title;
-                if (matter?.date) {
-                    let date = new Date(matter.date).toString();
-                    data.date = date;
+                    // deal with specific front matter
+                    // title, date...
+                    if (matter?.title) data.title = matter.title;
+                    if (matter?.date) {
+                        let date = new Date(matter.date).toString();
+                        data.date = date;
+                    }
+
+                    data.attributes = matter;
                 }
 
-                data.attributes = matter;
+                // parse markdown to html string
+                const html = parser.md(content, options);
+                if(options.exportHTML) data.html = html;
+
+                // Option, cleans text
+                if (options.cleanText) {
+                    const cleaned = parser.clean(html);
+                    data.cleanText = cleaned.cleanText; // clean text with no html tags
+                    data.cleanLine = cleaned.cleanLine; // clean text with no white spaces
+                } 
+
+                item.data = data;
+
+                return item;
+            } catch(err) {
+                throw err;
             }
-
-            // parse markdown to html string
-            const html = parser.md(content, options);
-            if(options.exportHTML) data.html = html;
-
-            // Option, cleans text
-            if (options.cleanText) {
-                const cleaned = parser.clean(html);
-                data.cleanText = cleaned.cleanText; // clean text with no html tags
-                data.cleanLine = cleaned.cleanLine; // clean text with no white spaces
-            } 
-
-            item.data = data;
-
-            return item;
         }
 
         /**
@@ -89,32 +93,36 @@ export default class Markson {
          */
 
         this.scan = (dir) => {
-            const filenames = fs.readdirSync(dir);
-            let array = [];
+            try {
+                const filenames = fs.readdirSync(dir);
+                let array = [];
 
-            filenames.forEach((filename) => {
-                // if the file is hidden (whose name starts with '.')
-                // then stop reading
-                if (filename.charAt(0) == '.') return false;
+                filenames.forEach((filename) => {
+                    // if the file is hidden (whose name starts with '.')
+                    // then stop reading
+                    if (filename.charAt(0) == '.') return false;
 
-                let item, pathname = path.join(dir, filename);
-                // for sub-directory
-                if (fs.lstatSync(pathname).isDirectory()) {
-                    item = {
-                        type: 'directory',
-                        filename: filename,
-                        data: this.scan(pathname),
+                    let item, pathname = path.join(dir, filename);
+                    // for sub-directory
+                    if (fs.lstatSync(pathname).isDirectory()) {
+                        item = {
+                            type: 'directory',
+                            filename: filename,
+                            data: this.scan(pathname),
+                        }
                     }
-                }
-                // for markdown files
-                else if (path.extname(filename) == '.md') {
-                    item = this.read(pathname);
-                }
+                    // for markdown files
+                    else if (path.extname(filename) == '.md') {
+                        item = this.read(pathname);
+                    }
 
-                if (item) array.push(item);
-            })
+                    if (item) array.push(item);
+                })
 
-            return array;
+                return array;
+            } catch(err) {
+                throw err;
+            }
         }
 
         /**
