@@ -15,11 +15,7 @@ npm i marksonjs
 ## Usage
 
 ```javascript
-import Markson from 'marksonjs';
-
-//...
-
-const markson = new Markson();
+import { markson } from 'marksonjs';
 
 let posts = markson.scan('./posts');        // scan markdown files in dir, returns an array
 let post = markson.read('./posts/post.md'); // read single markdown file, returns an object
@@ -30,12 +26,14 @@ let post = markson.read('./posts/post.md'); // read single markdown file, return
 The default options are as follows. Configure Markson as initialization if needed.
 
 ```javascript
+import { Markson } from 'marksonjs';
+
 const markson = new Markson({
         gfm: true,          // enable github-flavored-markdown
         cleanText: false,   // if enabled, exports clean text without html tags and white spaces
         frontmatter: true,  // if enabled, parse front matters in markdown files
         rawMD: false,       // if enabled, exports raw markdown content
-        exportHTML: true,
+        exportHTML: true,   // if enabled, exports parsed html string
         slug: 'filename',   // specify what to use as slug, filename or 'slug' attribute in front matter
 });
 ```
