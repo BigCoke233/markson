@@ -146,7 +146,7 @@ export class Markson {
     }
 }
 
-export const markson = new Markson({
+export default const markson = new Markson({
   gfm: true,          // enable github-flavored-markdown
   cleanText: false,   // if enabled, exports clean text without html tags and white spaces
   frontmatter: true,  // if enabled, parse front matters in markdown files
