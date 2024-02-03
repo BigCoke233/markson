@@ -1,6 +1,6 @@
 {
   "name": "marksonjs",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Markdown files to JSON JavaScript Library",
   "main": "index.js",
   "type": "module",
