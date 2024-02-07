@@ -82,9 +82,11 @@ export default class Markson {
 
         this.scan = (dir) => {
             try {
+                // read dir and get an array containing file names
                 const filenames = fs.readdirSync(dir);
-                let array = [];
 
+                // push data into an array
+                let array = [];
                 filenames.forEach((filename) => {
                     // if the file is hidden (whose name starts with '.')
                     // then stop reading
@@ -100,9 +102,7 @@ export default class Markson {
                               filename: filename,
                               data: data,
                           }
-                        } else {
-                          item = data;
-                        }
+                        } else item = data;
                     }
                     // for markdown files
                     else if (path.extname(filename) == '.md') {
